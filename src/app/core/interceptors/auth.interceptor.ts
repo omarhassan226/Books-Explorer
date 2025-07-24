@@ -1,36 +1,50 @@
-import { HttpErrorResponse, HttpEvent, HttpInterceptorFn } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { inject } from '@angular/core';
+import { AlertService } from '../services/alert.service';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const toastr = inject(ToastrService);
-  const router = inject(Router);
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(private alertService: AlertService, private router: Router) {}
 
-  const token = localStorage.getItem('token');
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    const token = localStorage.getItem('token');
 
-  const clonedRequest = token ? req.clone({
-    setHeaders: { Authorization: `Bearer ${token}` }
-  }) : req;
+    const clonedRequest = token
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : req;
 
-  return next(clonedRequest).pipe(
-    catchError((error: HttpErrorResponse): Observable<HttpEvent<any>> => {
-      let errorMessage = '';
-      if (error.status === 401) {
-        errorMessage = 'Unauthorized access. Please log in again.';
-        localStorage.removeItem('token');
-        router.navigate(['/login']);
-      } else if (error.status === 404) {
-        errorMessage = 'The requested resource was not found.';
-      } else if (error.status === 500) {
-        errorMessage = 'An error occurred on the server. Please try again later.';
-      } else {
-        errorMessage = `An error occurred: ${error.message}`;
-      }
+    return next.handle(clonedRequest).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = '';
 
-      toastr.error(errorMessage);
-      return throwError(() => error);
-    })
-  );
-};
+        if (error.status === 401) {
+          errorMessage = 'Unauthorized access. Please log in again.';
+          localStorage.removeItem('token');
+          this.router.navigate(['/login']);
+        } else if (error.status === 404) {
+          errorMessage = 'The requested resource was not found.';
+        } else if (error.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = 'An error occurred. Please try again later.';
+        }
+
+        this.alertService.showErrorMessage(errorMessage);
+
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+}

@@ -3,40 +3,39 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { ToastrModule } from 'ngx-toastr';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { loaderInterceptor } from './core/interceptors/loader.interceptor';
-import { LoaderComponent } from "./shared/components/loader/loader.component";
+import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
+import { LoaderComponent } from './shared/components/loader/loader.component';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { SharedModule } from './shared/shared.module';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot({
-        timeOut: 3000,
-        positionClass: 'toast-bottom-right',
-        preventDuplicates: true,
-        closeButton: true
-    }),
-    LoaderComponent
-],
+    LoaderComponent,
+    HttpClientModule,
+    SharedModule,
+    SweetAlert2Module.forRoot(),
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useFactory: authInterceptor,
-      multi: true
+      useClass: AuthInterceptor,
+      multi: true,
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useFactory: loaderInterceptor,
-      multi: true
-    }
+      useClass: LoaderInterceptor,
+      multi: true,
+    },
+    provideAnimationsAsync(),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

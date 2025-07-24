@@ -1,20 +1,26 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { LoaderService } from '../services/loader.service';
-import { catchError, finalize, throwError } from 'rxjs';
 
-export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
+@Injectable()
+export class LoaderInterceptor implements HttpInterceptor {
+  constructor(private loaderService: LoaderService) {}
 
-  const loaderService = inject(LoaderService)
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    this.loaderService.showLoader();
 
-  loaderService.showLoader()
-  return next(req).pipe(
-    finalize(() => {
-      loaderService.hideLoader()
-    }),
-    catchError((error: HttpErrorResponse) => {
-      loaderService.hideLoader();
-      return throwError(() => error)
-    })
-  )
-};
+    return next
+      .handle(req)
+      .pipe(finalize(() => this.loaderService.hideLoader()));
+  }
+}

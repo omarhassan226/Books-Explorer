@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -10,24 +11,39 @@ import { AuthService } from '../../core/services/auth.service';
 export class LoginComponent {
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService:AuthService, ) {
-    this.loginForm = fb.group({
-      email: ['', Validators.required, Validators.email],
+  constructor(private fb: FormBuilder, private authService: AuthService) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
   }
 
-  onSubmit(){
+  onSubmit() {
     this.authService.login(this.loginForm.value).subscribe({
-      next:(res:any)=>{
+      next: (res: any) => {
+        localStorage.setItem('token', res.token);
+        Swal.fire({
+          title: 'Success!',
+          text: 'You have logged in successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+        this.loginForm.reset();
         console.log('login successfully!', res);
       },
-      error:(error:any)=>{
+      error: (error: any) => {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Login failed. Please check your credentials.',
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+        });
+        this.loginForm.reset();
         console.log('login error', error);
       },
-      complete:()=>{
+      complete: () => {
         console.log('login request completed!');
-      }
-    })
+      },
+    });
   }
 }
