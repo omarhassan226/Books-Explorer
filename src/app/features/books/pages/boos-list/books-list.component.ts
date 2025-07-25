@@ -6,23 +6,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../../../shared/components/confirmation/confirmation.component';
 import { CreateBookComponent } from '../create-book/create-book.component';
 import { EditBookComponent } from '../edit-book/edit-book.component';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  startWith,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-boos-list',
-  templateUrl: './boos-list.component.html',
-  styleUrls: ['./boos-list.component.scss'],
+  templateUrl: './books-list.component.html',
+  styleUrls: ['./books-list.component.scss'],
 })
-export class BoosListComponent implements OnInit {
+export class BooksListComponent implements OnInit {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   books: IBook[] = [];
   loading = true;

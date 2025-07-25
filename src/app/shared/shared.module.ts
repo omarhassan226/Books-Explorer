@@ -25,6 +25,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { LoaderComponent } from './components/loader/loader.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ConfirmationComponent } from './components/confirmation/confirmation.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 const materialModules = [
   MatButtonModule,
@@ -59,6 +60,7 @@ const materialModules = [
     ...materialModules,
     HeaderComponent,
     ConfirmationComponent,
+    NotFoundComponent,
   ],
   exports: [...materialModules],
 })

@@ -18,7 +18,7 @@
   margin-bottom: 20px;
   font-size: 38px;
   font-weight: 600;
-  color: #b5dafe; /* Primary blue color */
+  color: #b5dafe;
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -51,7 +51,6 @@
   animation-delay: 0.4s;
 }
 
-/* Animation for each letter */
 @keyframes slideIn {
   0% {
     opacity: 0;

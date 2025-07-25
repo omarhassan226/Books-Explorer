@@ -31,7 +31,12 @@
         <mat-option value="desc">Price: High to Low</mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+    <button
+      mat-raised-button
+      color="primary"
+      style="background-color: #909090 !important; color: #ffb4ab"
+      (click)="openCreateDialog()"
+    >
       <mat-icon>add</mat-icon> Create
     </button>
   </div>
@@ -49,30 +54,40 @@
   </ng-container>
 
   <ng-template #bookCards>
-    <div class="card-container">
-      <div class="book-card" *ngFor="let book of books">
-        <div class="card-header">
-          <h3>{{ book.title }}</h3>
-          <span class="price">{{ book.price | currency }}</span>
-        </div>
-        <div class="card-content">
-          <p><strong>Author:</strong> {{ book.author }}</p>
-          <p><strong>Category:</strong> {{ book.category }}</p>
-          <p><strong>Description:</strong> {{ book.description }}</p>
-        </div>
-        <div class="card-actions">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="openEditDialog(book)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="openDeleteDialog(book)">
-            <mat-icon>delete</mat-icon>
-          </button>
+    <ng-container *ngIf="books.length > 0; else noBooks">
+      <div class="card-container">
+        <div class="book-card" *ngFor="let book of books">
+          <div class="card-header">
+            <h3>{{ book.title }}</h3>
+            <span class="price">{{ book.price | currency }}</span>
+          </div>
+          <div class="card-content">
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Category:</strong> {{ book.category }}</p>
+            <p><strong>Description:</strong> {{ book.description }}</p>
+          </div>
+          <div class="card-actions">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="openEditDialog(book)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="openDeleteDialog(book)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-template #noBooks>
+      <app-not-found message="No books found."></app-not-found>
+    </ng-template>
   </ng-template>
 </div>
