@@ -14,7 +14,7 @@ export class EditBookComponent {
     public dialogRef: MatDialogRef<EditBookComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IBook
   ) {
-    this.book = { ...data }; // Copy the existing book data
+    this.book = { ...data };
   }
 
   onSave(): void {

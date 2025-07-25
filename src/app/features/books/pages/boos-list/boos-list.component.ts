@@ -73,48 +73,76 @@ export class BoosListComponent implements OnInit {
     const dialogRef = this.dialog.open(CreateBookComponent);
 
     dialogRef.afterClosed().subscribe((newBook: IBook) => {
+      console.log(newBook);
+
       if (newBook) {
-        this.books.push(newBook);
-        // this.getBooks(); // Optionally re-fetch books from the API
-        Swal.fire({
-          title: 'Created!',
-          text: `${newBook.title} has been created.`,
-          icon: 'success',
-          confirmButtonText: 'OK',
+        this.bookService.createBook(newBook).subscribe({
+          next: (createdBook: IBook) => {
+            this.books.push(createdBook);
+            this.getBooks();
+            Swal.fire({
+              title: 'Created!',
+              text: `${createdBook.title} has been created.`,
+              icon: 'success',
+              confirmButtonText: 'OK',
+            });
+          },
+          error: () => {
+            Swal.fire('Error', 'Failed to create the book.', 'error');
+          },
         });
       }
     });
   }
 
-  openEditDialog(book: any): void {
+  openEditDialog(book: IBook): void {
     const dialogRef = this.dialog.open(EditBookComponent, {
       data: book,
     });
 
     dialogRef.afterClosed().subscribe((updatedBook: IBook) => {
-      if (updatedBook) {
-        const index = this.books.findIndex((b) => b.id === updatedBook.id);
-        if (index !== -1) {
-          this.books[index] = updatedBook;
-          // this.getBooks(); // Optionally re-fetch books from the API
-          Swal.fire({
-            title: 'Updated!',
-            text: `${updatedBook.title} has been updated.`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
-        }
+      if (updatedBook && updatedBook._id) {
+        this.bookService.updateBook(updatedBook._id, updatedBook).subscribe({
+          next: (res) => {
+            const index = this.books.findIndex(
+              (b) => b._id === updatedBook._id
+            );
+            if (index !== -1) {
+              this.books[index] = updatedBook;
+              this.getBooks();
+              Swal.fire({
+                title: 'Updated!',
+                text: `${updatedBook.title} has been updated.`,
+                icon: 'success',
+                confirmButtonText: 'OK',
+              });
+            }
+          },
+          error: () => {
+            Swal.fire('Error', 'Failed to update the book.', 'error');
+          },
+        });
       }
     });
   }
 
   deleteBook(book: IBook): void {
-    this.books = this.books.filter((b) => b !== book);
-    Swal.fire({
-      title: 'Deleted!',
-      text: `"${book.title}" has been deleted.`,
-      icon: 'success',
-      confirmButtonText: 'OK',
+    if (!book._id) return;
+
+    this.bookService.deleteBook(book._id).subscribe({
+      next: () => {
+        // this.books = this.books.filter((b) => b._id !== book._id);
+        this.getBooks();
+        Swal.fire({
+          title: 'Deleted!',
+          text: `"${book.title}" has been deleted.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      },
+      error: () => {
+        Swal.fire('Error', 'Failed to delete the book.', 'error');
+      },
     });
   }
 }

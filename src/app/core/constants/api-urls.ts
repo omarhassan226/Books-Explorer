@@ -1,4 +1,4 @@
 export const apiUrls = {
-    login: '/login',
-    books: '/books',
-}
+  login: 'login',
+  books: 'books',
+};
