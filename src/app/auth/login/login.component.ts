@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,11 @@ import Swal from 'sweetalert2';
 export class LoginComponent {
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -29,6 +34,7 @@ export class LoginComponent {
           confirmButtonText: 'OK',
         });
         this.loginForm.reset();
+        this.router.navigate(['/books/show']);
         console.log('login successfully!', res);
       },
       error: (error: any) => {

@@ -23,6 +23,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTreeModule } from '@angular/material/tree';
 import { LoaderComponent } from './components/loader/loader.component';
+import { HeaderComponent } from './components/header/header.component';
+import { ConfirmationComponent } from './components/confirmation/confirmation.component';
 
 const materialModules = [
   MatButtonModule,
@@ -51,7 +53,13 @@ const materialModules = [
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, LoaderComponent, ...materialModules],
+  imports: [
+    CommonModule,
+    LoaderComponent,
+    ...materialModules,
+    HeaderComponent,
+    ConfirmationComponent,
+  ],
   exports: [...materialModules],
 })
 export class SharedModule {}

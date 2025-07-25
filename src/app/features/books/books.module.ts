@@ -3,15 +3,26 @@ import { CommonModule } from '@angular/common';
 
 import { BooksRoutingModule } from './books-routing.module';
 import { BooksComponent } from './books.component';
-
+import { SharedModule } from '../../shared/shared.module';
+import { BoosListComponent } from './pages/boos-list/boos-list.component';
+import { HeaderComponent } from '../../shared/components/header/header.component';
+import { CreateBookComponent } from './pages/create-book/create-book.component';
+import { EditBookComponent } from './pages/edit-book/edit-book.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    BooksComponent
+    BooksComponent,
+    BoosListComponent,
+    CreateBookComponent,
+    EditBookComponent,
   ],
   imports: [
     CommonModule,
-    BooksRoutingModule
-  ]
+    BooksRoutingModule,
+    SharedModule,
+    HeaderComponent,
+    FormsModule,
+  ],
 })
-export class BooksModule { }
+export class BooksModule {}
