@@ -1,10 +1,15 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+<h2 mat-dialog-title class="dialog-title">❗ {{ data.title }}</h2>
+<mat-divider></mat-divider>
 
-<mat-dialog-content>
-  <p>{{ data.message }}</p>
+<mat-dialog-content class="dialog-content">
+  <p class="confirmation-message">{{ data.message }}</p>
 </mat-dialog-content>
 
-<mat-dialog-actions>
-  <button mat-button (click)="onClose(false)">Cancel</button>
-  <button mat-button color="primary" (click)="onClose(true)">Confirm</button>
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button class="dialog-button cancel-btn" (click)="onClose(false)">
+    Cancel
+  </button>
+  <button class="dialog-button confirm-btn" (click)="onClose(true)">
+    Confirm
+  </button>
 </mat-dialog-actions>

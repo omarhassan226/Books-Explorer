@@ -5,11 +5,12 @@ import {
   MatDialogActions,
   MatDialogContent,
 } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'app-confirmation',
   standalone: true,
-  imports: [MatDialogActions, MatDialogContent],
+  imports: [MatDialogActions, MatDialogContent, MatDivider],
   templateUrl: './confirmation.component.html',
   styleUrl: './confirmation.component.scss',
 })

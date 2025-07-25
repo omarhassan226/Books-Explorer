@@ -16,6 +16,8 @@ export class CreateBookComponent {
     description: '',
   };
 
+  title: any = '📚 Create New Book';
+
   constructor(
     public dialogRef: MatDialogRef<CreateBookComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
