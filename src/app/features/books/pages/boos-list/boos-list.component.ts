@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IBook } from '../../../../core/modals/book';
 import { BookService } from '../../services/book.service';
 import Swal from 'sweetalert2';
@@ -6,6 +6,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationComponent } from '../../../../shared/components/confirmation/confirmation.component';
 import { CreateBookComponent } from '../create-book/create-book.component';
 import { EditBookComponent } from '../edit-book/edit-book.component';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-boos-list',
@@ -13,9 +22,13 @@ import { EditBookComponent } from '../edit-book/edit-book.component';
   styleUrls: ['./boos-list.component.scss'],
 })
 export class BoosListComponent implements OnInit {
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   books: IBook[] = [];
   loading = true;
   skeletonRows: number[] = new Array(5).fill(0);
+  searchControl = new FormControl('');
+  hasFocused: any = false;
+  priceSortOrder: 'asc' | 'desc' | '' = '';
   displayedColumns: string[] = [
     'title',
     'author',
@@ -29,6 +42,14 @@ export class BoosListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBooks();
+    this.setupSearch();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.searchInput?.nativeElement.focus();
+      this.hasFocused = true;
+    }, 0);
   }
 
   getBooks() {
@@ -78,7 +99,6 @@ export class BoosListComponent implements OnInit {
       if (newBook) {
         this.bookService.createBook(newBook).subscribe({
           next: (createdBook: IBook) => {
-            this.books.push(createdBook);
             this.getBooks();
             Swal.fire({
               title: 'Created!',
@@ -101,12 +121,16 @@ export class BoosListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((updatedBook: IBook) => {
-      if (updatedBook && updatedBook._id) {
+      console.log(updatedBook);
+
+      if (updatedBook._id) {
         this.bookService.updateBook(updatedBook._id, updatedBook).subscribe({
           next: (res) => {
-            const index = this.books.findIndex(
-              (b) => b._id === updatedBook._id
-            );
+            console.log(res);
+
+            const index = this.books.findIndex((b) => b._id == updatedBook._id);
+            console.log(index);
+
             if (index !== -1) {
               this.books[index] = updatedBook;
               this.getBooks();
@@ -131,7 +155,6 @@ export class BoosListComponent implements OnInit {
 
     this.bookService.deleteBook(book._id).subscribe({
       next: () => {
-        // this.books = this.books.filter((b) => b._id !== book._id);
         this.getBooks();
         Swal.fire({
           title: 'Deleted!',
@@ -144,5 +167,43 @@ export class BoosListComponent implements OnInit {
         Swal.fire('Error', 'Failed to delete the book.', 'error');
       },
     });
+  }
+
+  setupSearch(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        filter((value): value is string => value !== null),
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((searchTerm: string) => {
+          const trimmed = searchTerm?.trim();
+          if (trimmed) {
+            this.loading = true;
+            return this.bookService.searchBooks(trimmed);
+          } else {
+            return this.bookService.getBooks();
+          }
+        })
+      )
+      .subscribe({
+        next: (res: any) => {
+          this.books = res;
+          this.loading = false;
+        },
+        error: () => {
+          this.books = [];
+          this.loading = false;
+        },
+      });
+  }
+
+  sortBooks(): void {
+    if (this.priceSortOrder === 'asc') {
+      this.books = [...this.books].sort((a, b) => a.price - b.price);
+    } else if (this.priceSortOrder === 'desc') {
+      this.books = [...this.books].sort((a, b) => b.price - a.price);
+    } else {
+      this.getBooks();
+    }
   }
 }

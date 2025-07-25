@@ -2,35 +2,90 @@
 <mat-divider></mat-divider>
 
 <mat-dialog-content class="dialog-content">
-  <div class="form-grid">
+  <form [formGroup]="editForm" class="form-grid">
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Title</mat-label>
-      <input matInput [(ngModel)]="book.title" />
+      <input matInput formControlName="title" />
+      <mat-error
+        *ngIf="
+          editForm.get('title')?.touched &&
+          editForm.get('title')?.hasError('required')
+        "
+      >
+        Title is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Author</mat-label>
-      <input matInput [(ngModel)]="book.author" />
+      <input matInput formControlName="author" />
+      <mat-error
+        *ngIf="
+          editForm.get('author')?.touched &&
+          editForm.get('author')?.hasError('required')
+        "
+      >
+        Author is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Category</mat-label>
-      <input matInput [(ngModel)]="book.category" />
+      <input matInput formControlName="category" />
+      <mat-error
+        *ngIf="
+          editForm.get('category')?.touched &&
+          editForm.get('category')?.hasError('required')
+        "
+      >
+        Category is required
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Price</mat-label>
-      <input matInput [(ngModel)]="book.price" type="number" />
+      <input matInput formControlName="price" type="number" />
+      <mat-error
+        *ngIf="
+          editForm.get('price')?.touched &&
+          editForm.get('price')?.hasError('required')
+        "
+      >
+        Price is required
+      </mat-error>
+      <mat-error
+        *ngIf="
+          editForm.get('price')?.touched &&
+          editForm.get('price')?.hasError('min')
+        "
+      >
+        Price can't be negative
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput rows="3" [(ngModel)]="book.description"></textarea>
+      <textarea matInput rows="3" formControlName="description"></textarea>
+      <mat-error
+        *ngIf="
+          editForm.get('description')?.touched &&
+          editForm.get('description')?.hasError('required')
+        "
+      >
+        Description is required
+      </mat-error>
     </mat-form-field>
-  </div>
+  </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="dialog-actions">
   <button mat-stroked-button color="warn" (click)="onClose()">Cancel</button>
-  <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSave()"
+    [disabled]="editForm.invalid"
+  >
+    Save
+  </button>
 </mat-dialog-actions>

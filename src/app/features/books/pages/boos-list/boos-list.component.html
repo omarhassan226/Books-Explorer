@@ -1,24 +1,44 @@
 <div class="book-list">
-  <!-- Skeleton Loading -->
-  <div *ngIf="loading" class="skeleton-table">
-    <div class="skeleton-row" *ngFor="let _ of skeletonRows">
-      <div class="skeleton-cell"></div>
-      <div class="skeleton-cell"></div>
-      <div class="skeleton-cell"></div>
-      <div class="skeleton-cell"></div>
-      <div class="skeleton-cell"></div>
-    </div>
+  <app-header style="flex-grow: 0.5" [title]="'Books List'"></app-header>
+
+  <div class="action-buttons">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search books</mat-label>
+      <input
+        #searchInput
+        matInput
+        [formControl]="searchControl"
+        placeholder="Search by title..."
+      />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="sort-field">
+      <mat-label>Sort by price</mat-label>
+      <mat-select [(value)]="priceSortOrder" (selectionChange)="sortBooks()">
+        <mat-option value="">None</mat-option>
+        <mat-option value="asc">Price: Low to High</mat-option>
+        <mat-option value="desc">Price: High to Low</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon> Create
+    </button>
   </div>
 
-  <!-- Book Cards -->
-  <div *ngIf="!loading">
-    <div class="action-buttons">
-      <app-header style="flex-grow: 0.5" [title]="'Books List'"></app-header>
-      <button mat-raised-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon> Create
-      </button>
+  <ng-container *ngIf="loading; else bookCards">
+    <div class="skeleton-table">
+      <div class="skeleton-row" *ngFor="let _ of skeletonRows">
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+      </div>
     </div>
+  </ng-container>
 
+  <ng-template #bookCards>
     <div class="card-container">
       <div class="book-card" *ngFor="let book of books">
         <div class="card-header">
@@ -44,5 +64,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </ng-template>
 </div>

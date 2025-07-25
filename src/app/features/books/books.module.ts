@@ -8,7 +8,7 @@ import { BoosListComponent } from './pages/boos-list/boos-list.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { CreateBookComponent } from './pages/create-book/create-book.component';
 import { EditBookComponent } from './pages/edit-book/edit-book.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
     SharedModule,
     HeaderComponent,
     FormsModule,
+    ReactiveFormsModule,
   ],
 })
 export class BooksModule {}
