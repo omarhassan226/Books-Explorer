@@ -1,0 +1,63 @@
+<div class="book-list">
+  <app-header [title]="'Books List'"></app-header>
+
+  <div *ngIf="loading" class="skeleton-table">
+    <div class="skeleton-row" *ngFor="let _ of skeletonRows">
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+      <div class="skeleton-cell"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading">
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon> Create
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="books" class="mat-elevation-z8">
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Title </th>
+        <td mat-cell *matCellDef="let book"> {{ book.title }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="author">
+        <th mat-header-cell *matHeaderCellDef> Author </th>
+        <td mat-cell *matCellDef="let book"> {{ book.author }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let book"> {{ book.category }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef> Price </th>
+        <td mat-cell *matCellDef="let book"> {{ book.price | currency }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let book"> {{ book.description }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let book">
+          <button mat-icon-button (click)="openEditDialog(book)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openDeleteDialog(book)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
