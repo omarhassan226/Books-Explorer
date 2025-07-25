@@ -15,6 +15,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-boos-list',
@@ -38,7 +39,11 @@ export class BoosListComponent implements OnInit {
     'actions',
   ];
 
-  constructor(private bookService: BookService, private dialog: MatDialog) {}
+  constructor(
+    private bookService: BookService,
+    private dialog: MatDialog,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.getBooks();
@@ -205,5 +210,9 @@ export class BoosListComponent implements OnInit {
     } else {
       this.getBooks();
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

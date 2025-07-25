@@ -1,6 +1,16 @@
 <div class="book-list">
-  <app-header style="flex-grow: 0.5" [title]="'Books List'"></app-header>
-
+  <div class="header-container">
+    <app-header style="flex-grow: 1" [title]="'Books List'"></app-header>
+    <button
+      mat-icon-button
+      color="warn"
+      (click)="logout()"
+      matTooltip="Logout"
+      style="position: absolute; right: 1rem"
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
   <div class="action-buttons">
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Search books</mat-label>

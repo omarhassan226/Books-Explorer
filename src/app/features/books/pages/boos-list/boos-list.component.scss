@@ -1,9 +1,16 @@
 .book-list {
   padding: 32px 16px;
-  max-width: 1400px;
   margin: auto;
   background: #bcbcbc;
 }
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 
 .action-buttons {
   display: flex;
